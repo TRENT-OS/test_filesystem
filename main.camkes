@@ -1,0 +1,33 @@
+/*
+ *  CAmkES configuration file for FileSystem tests
+ *
+ *  Copyright (C) 2020, Hensoldt Cyber GmbH
+ */
+
+import <std_connector.camkes>;
+
+import "components/Tests/test_OS_FileSystem.camkes";
+
+#include "RamDisk/RamDisk.camkes"
+DECLARE_COMPONENT_RamDisk(RamDisk)
+
+#include "StorageServer/camkes/StorageServer.camkes"
+DECLARE_COMPONENT_StorageServer(StorageServer)
+
+assembly {
+    composition {
+        component   test_OS_FileSystem      unitTests;
+        component   RamDisk                 ramDisk;
+
+        DECLARE_AND_CONNECT_INSTANCE_StorageServer(
+            StorageServer, storageServer,
+            ramDisk.storage_rpc, ramDisk.storage_port,
+            unitTests.storage_rpc, unitTests.storage_dp)
+    }
+
+    configuration {
+        CONFIGURE_INSTANCE_StorageServer(
+            storageServer,
+            0, 1024*1024)
+    }
+}
