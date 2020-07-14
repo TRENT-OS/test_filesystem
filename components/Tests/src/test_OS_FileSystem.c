@@ -79,38 +79,58 @@ test_OS_FileSystem(
     test_OS_FileSystem_unmount(hFs);
 }
 
+//------------------------------------------------------------------------------
+// High level Tests
+//------------------------------------------------------------------------------
+
+static void
+test_OS_FileSystem_little_fs(void)
+{
+    OS_Error_t ret;
+    OS_FileSystem_Handle_t hFs;
+
+    if ((ret = OS_FileSystem_init(&hFs, &littleCfg)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+        return;
+    }
+
+    test_OS_FileSystem(hFs);
+
+    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+        return;
+    }
+}
+
+static void
+test_OS_FileSystem_fat(void)
+{
+    OS_Error_t ret;
+    OS_FileSystem_Handle_t hFs;
+
+    if ((ret = OS_FileSystem_init(&hFs, &fatCfg)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+        return;
+    }
+
+    test_OS_FileSystem(hFs);
+
+    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+        return;
+    }
+}
+
 // Public Functions ------------------------------------------------------------
 
 int run()
 {
-    OS_Error_t err;
-    OS_FileSystem_Handle_t hFs;
-
-    // Test for LittleFS
-    if ((err = OS_FileSystem_init(&hFs, &littleCfg)) !=  OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed.");
-        return -1;
-    }
-    test_OS_FileSystem(hFs);
-    if ((err = OS_FileSystem_free(hFs)) !=  OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed.");
-        return -1;
-    }
-
-    // Test for FatFS
-    if ((err = OS_FileSystem_init(&hFs, &fatCfg)) !=  OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed.");
-        return -1;
-    }
-    test_OS_FileSystem(hFs);
-    if ((err = OS_FileSystem_free(hFs)) !=  OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed.");
-        return -1;
-    }
+    test_OS_FileSystem_little_fs();
+    test_OS_FileSystem_fat();
 
     Debug_LOG_INFO("All tests successfully completed.");
 
