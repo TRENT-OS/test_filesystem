@@ -115,7 +115,7 @@ test_OS_FileSystem_little_fs(void)
 
     if ((ret = OS_FileSystem_init(&hFs, &littleCfg)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
         return;
     }
 
@@ -123,7 +123,7 @@ test_OS_FileSystem_little_fs(void)
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
         return;
     }
 }
@@ -159,7 +159,7 @@ test_OS_FileSystem_fat(void)
 
     if ((ret = OS_FileSystem_init(&hFs, &fatCfg)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
         return;
     }
 
@@ -167,7 +167,7 @@ test_OS_FileSystem_fat(void)
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
         return;
     }
 }
