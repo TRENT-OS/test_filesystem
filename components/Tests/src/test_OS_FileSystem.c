@@ -32,6 +32,16 @@ static OS_FileSystem_Config_t fatCfg =
 };
 
 
+static OS_FileSystem_Config_t spiffsCfg =
+{
+    .type = OS_FileSystem_Type_SPIFFS,
+    .size = OS_FileSystem_STORAGE_MAX,
+    .storage = OS_FILESYSTEM_ASSIGN_Storage(
+        storage_rpc,
+        storage_dp),
+};
+
+
 // Private Functions -----------------------------------------------------------
 
 static void
@@ -104,6 +114,28 @@ test_OS_FileSystem_little_fs(void)
     }
 }
 
+
+static void
+test_OS_FileSystem_spiffs(void)
+{
+    OS_Error_t ret;
+    OS_FileSystem_Handle_t hFs;
+
+    if ((ret = OS_FileSystem_init(&hFs, &spiffsCfg)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+        return;
+    }
+
+    test_OS_FileSystem(hFs);
+
+    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
+    {
+        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+        return;
+    }
+}
+
 static void
 test_OS_FileSystem_fat(void)
 {
@@ -131,6 +163,7 @@ int run()
 {
     test_OS_FileSystem_little_fs();
     test_OS_FileSystem_fat();
+    test_OS_FileSystem_spiffs();
 
     Debug_LOG_INFO("All tests successfully completed.");
 
