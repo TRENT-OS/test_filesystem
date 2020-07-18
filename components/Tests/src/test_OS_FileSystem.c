@@ -13,6 +13,8 @@
 void test_OS_FileSystemFile(
     OS_FileSystem_Handle_t hFs);
 
+
+//------------------------------------------------------------------------------
 static OS_FileSystem_Config_t littleCfg =
 {
     .type = OS_FileSystem_Type_LITTLEFS,
@@ -22,6 +24,8 @@ static OS_FileSystem_Config_t littleCfg =
         storage_dp),
 };
 
+
+//------------------------------------------------------------------------------
 static OS_FileSystem_Config_t fatCfg =
 {
     .type = OS_FileSystem_Type_FATFS,
@@ -32,6 +36,7 @@ static OS_FileSystem_Config_t fatCfg =
 };
 
 
+//------------------------------------------------------------------------------
 static OS_FileSystem_Config_t spiffsCfg =
 {
     .type = OS_FileSystem_Type_SPIFFS,
@@ -44,6 +49,8 @@ static OS_FileSystem_Config_t spiffsCfg =
 
 // Private Functions -----------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
 static void
 test_OS_FileSystem_mount(
     OS_FileSystem_Handle_t hFs)
@@ -55,6 +62,8 @@ test_OS_FileSystem_mount(
     TEST_FINISH();
 }
 
+
+//------------------------------------------------------------------------------
 static void
 test_OS_FileSystem_unmount(
     OS_FileSystem_Handle_t hFs)
@@ -66,6 +75,8 @@ test_OS_FileSystem_unmount(
     TEST_FINISH();
 }
 
+
+//------------------------------------------------------------------------------
 static void
 test_OS_FileSystem_format(
     OS_FileSystem_Handle_t hFs)
@@ -77,6 +88,8 @@ test_OS_FileSystem_format(
     TEST_FINISH();
 }
 
+
+//------------------------------------------------------------------------------
 static void
 test_OS_FileSystem(
     OS_FileSystem_Handle_t hFs)
@@ -93,7 +106,8 @@ test_OS_FileSystem(
 // High level Tests
 //------------------------------------------------------------------------------
 
-static void
+
+//------------------------------------------------------------------------------
 test_OS_FileSystem_little_fs(void)
 {
     OS_Error_t ret;
@@ -115,7 +129,7 @@ test_OS_FileSystem_little_fs(void)
 }
 
 
-static void
+//------------------------------------------------------------------------------
 test_OS_FileSystem_spiffs(void)
 {
     OS_Error_t ret;
@@ -136,7 +150,8 @@ test_OS_FileSystem_spiffs(void)
     }
 }
 
-static void
+
+//------------------------------------------------------------------------------
 test_OS_FileSystem_fat(void)
 {
     OS_Error_t ret;
@@ -159,6 +174,8 @@ test_OS_FileSystem_fat(void)
 
 // Public Functions ------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------
 int run()
 {
     test_OS_FileSystem_little_fs();
