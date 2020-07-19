@@ -108,6 +108,7 @@ test_OS_FileSystem(
 
 
 //------------------------------------------------------------------------------
+static OS_Error_t
 test_OS_FileSystem_little_fs(void)
 {
     OS_Error_t ret;
@@ -116,7 +117,7 @@ test_OS_FileSystem_little_fs(void)
     if ((ret = OS_FileSystem_init(&hFs, &littleCfg)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
 
     test_OS_FileSystem(hFs);
@@ -124,12 +125,15 @@ test_OS_FileSystem_little_fs(void)
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
+
+    return OS_SUCCESS;
 }
 
 
 //------------------------------------------------------------------------------
+static OS_Error_t
 test_OS_FileSystem_spiffs(void)
 {
     OS_Error_t ret;
@@ -138,7 +142,7 @@ test_OS_FileSystem_spiffs(void)
     if ((ret = OS_FileSystem_init(&hFs, &spiffsCfg)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
 
     test_OS_FileSystem(hFs);
@@ -146,12 +150,15 @@ test_OS_FileSystem_spiffs(void)
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
+
+    return OS_SUCCESS;
 }
 
 
 //------------------------------------------------------------------------------
+static OS_Error_t
 test_OS_FileSystem_fat(void)
 {
     OS_Error_t ret;
@@ -160,7 +167,7 @@ test_OS_FileSystem_fat(void)
     if ((ret = OS_FileSystem_init(&hFs, &fatCfg)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
 
     test_OS_FileSystem(hFs);
@@ -168,9 +175,26 @@ test_OS_FileSystem_fat(void)
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
-        return;
+        return OS_ERROR_GENERIC;
     }
+
+    return OS_SUCCESS;
 }
+
+
+//------------------------------------------------------------------------------
+#define DO_RUN_TEST_SCENARIO(_test_scnenario_func_) \
+    { \
+        OS_Error_t ret = _test_scnenario_func_(); \
+        if (ret != OS_SUCCESS) \
+        { \
+            Debug_LOG_ERROR( #_test_scnenario_func_ "() FAILED, code %d", ret); \
+        } \
+        else \
+        { \
+            Debug_LOG_INFO( #_test_scnenario_func_ "() successful"); \
+        } \
+    }
 
 // Public Functions ------------------------------------------------------------
 
@@ -178,11 +202,11 @@ test_OS_FileSystem_fat(void)
 //------------------------------------------------------------------------------
 int run()
 {
-    test_OS_FileSystem_little_fs();
-    test_OS_FileSystem_fat();
-    test_OS_FileSystem_spiffs();
+    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_little_fs );
+    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
+    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_fat );
 
-    Debug_LOG_INFO("All tests successfully completed.");
+    Debug_LOG_INFO("All test scenarios completed");
 
     return 0;
 }
