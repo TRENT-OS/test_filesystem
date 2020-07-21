@@ -10,7 +10,11 @@ os_set_config_file(system_config.h)
 
 project(system_config C)
 add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(${PROJECT_NAME}
+  INTERFACE
+    ${CMAKE_CURRENT_LIST_DIR}
+    ../../../seos_sandbox
+)
 
 #-------------------------------------------------------------------------------
 project(test_filesystem C)
