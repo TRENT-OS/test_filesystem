@@ -37,14 +37,15 @@ static OS_FileSystem_Config_t fatCfg =
 
 
 //------------------------------------------------------------------------------
-static OS_FileSystem_Config_t spiffsCfg =
-{
-    .type = OS_FileSystem_Type_SPIFFS,
-    .size = OS_FileSystem_STORAGE_MAX,
-    .storage = OS_FILESYSTEM_ASSIGN_Storage(
-        storage_rpc,
-        storage_dp),
-};
+// Remove SPIFFS from code base temporarily
+// static OS_FileSystem_Config_t spiffsCfg =
+// {
+//     .type = OS_FileSystem_Type_SPIFFS,
+//     .size = OS_FileSystem_STORAGE_MAX,
+//     .storage = OS_FILESYSTEM_ASSIGN_Storage(
+//         storage_rpc,
+//         storage_dp),
+// };
 
 
 // Private Functions -----------------------------------------------------------
@@ -133,28 +134,29 @@ test_OS_FileSystem_little_fs(void)
 
 
 //------------------------------------------------------------------------------
-static OS_Error_t
-test_OS_FileSystem_spiffs(void)
-{
-    OS_Error_t ret;
-    OS_FileSystem_Handle_t hFs;
-
-    if ((ret = OS_FileSystem_init(&hFs, &spiffsCfg)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    test_OS_FileSystem(hFs);
-
-    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    return OS_SUCCESS;
-}
+// Remove SPIFFS from code base temporarily
+// static void
+// test_OS_FileSystem_spiffs(void)
+// {
+//     OS_Error_t ret;
+//     OS_FileSystem_Handle_t hFs;
+//
+//     if ((ret = OS_FileSystem_init(&hFs, &spiffsCfg)) != OS_SUCCESS)
+//     {
+//         Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
+//         return OS_ERROR_GENERIC;
+//     }
+//
+//     test_OS_FileSystem(hFs);
+//
+//     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
+//     {
+//         Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
+//         return OS_ERROR_GENERIC;
+//     }
+//
+//     return OS_SUCCESS;
+// }
 
 
 //------------------------------------------------------------------------------
@@ -203,7 +205,8 @@ test_OS_FileSystem_fat(void)
 int run()
 {
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_little_fs );
-    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
+    // Remove SPIFFS from code base temporarily
+    // DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_fat );
 
     Debug_LOG_INFO("All test scenarios completed");
