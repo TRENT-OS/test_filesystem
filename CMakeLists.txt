@@ -15,6 +15,10 @@ target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 #-------------------------------------------------------------------------------
 project(test_filesystem C)
 
+DeclareCAmkESComponent_Storage_Flash_Adapter(
+    Flash_Adapter
+)
+
 DeclareCAmkESComponent(
     test_OS_FileSystem
     SOURCES
@@ -28,6 +32,7 @@ DeclareCAmkESComponent(
         os_core_api
         os_libs
         os_filesystem
+        Flash_Adapter_client
 )
 
 # DeclareCAmkESComponent_RamDisk(

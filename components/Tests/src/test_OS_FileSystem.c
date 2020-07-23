@@ -202,8 +202,22 @@ test_OS_FileSystem_fat(void)
 //------------------------------------------------------------------------------
 int run()
 {
+    // Little FS and SPIFFS will take care of erase operations, so the flash
+    // driver does not have to be smart here, it can blindly execute all
+    // operations
+    adapter_rpc_set_mode(FLASH_ADAPTER_MODE_TRANSPARENT);
+
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_little_fs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
+
+    // FAT does not know the concept of flash storage, write overwriting data
+    // required an erase operation first. Switch the flash driver into a mode
+    // where it does the erasing automatically. Note that this does not give
+    // any guarantees how smart the driver implements this actually, the most
+    // simple strategy of erasing whole block(s) first and then update them
+    // with the changes wears out the flash faster.
+    adapter_rpc_set_mode(FLASH_ADAPTER_MODE_ERASE_BEFORE_WRITE);
+
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_fat );
 
     Debug_LOG_INFO("All test scenarios completed");
