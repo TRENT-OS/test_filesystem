@@ -20,6 +20,8 @@ DeclareCAmkESComponent(
     SOURCES
         components/Tests/src/test_OS_FileSystem.c
         components/Tests/src/test_OS_FileSystemFile.c
+    INCLUDES
+        ${OS_LIBS_DIR}
     C_FLAGS
         -Wall
         -Werror
