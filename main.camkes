@@ -14,6 +14,9 @@ DECLARE_COMPONENT_TimeServer(TimeServer)
 #include "RPI_SPI_Flash/RPI_SPI_Flash.camkes"
 DECLARE_COMPONENT_RPI_SPI_FLASH_DRV(RPI_SPI_Flash)
 
+#include "Storage_Flash_Adapter/Storage_Flash_Adapter.camkes"
+DECLARE_COMPONENT_Storage_Flash_Adapter(Flash_Adapter)
+
 // #include "RamDisk/RamDisk.camkes"
 // DECLARE_COMPONENT_RamDisk(RamDisk)
 
@@ -33,11 +36,18 @@ assembly {
             timeServer,
             flash.timeServer_rpc)
 
+        component   Flash_Adapter           adapter;
+        CONNECT_Storage_Flash_Adapter_ctrl(
+            adapter,
+            unitTests.adapter_rpc)
+        CONNECT_Storage_Flash_Adapter_upper(
+            adapter,
+            unitTests.storage_rpc, unitTests.storage_dp)
 
         DECLARE_AND_CONNECT_INSTANCE_StorageServer(
             StorageServer, storageServer,
             flash.storage_rpc, flash.storage_port,
-            unitTests.storage_rpc, unitTests.storage_dp)
+            adapter.storage_lower_rpc, adapter.storage_lower_port)
     }
 
     configuration {
@@ -45,6 +55,6 @@ assembly {
 
         CONFIGURE_INSTANCE_StorageServer(
             storageServer,
-            0, 64*1024)
+            0, 128 * 1024)
     }
 }

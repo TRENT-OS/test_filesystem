@@ -3,9 +3,11 @@
  */
 
 import <if_OS_Storage.camkes>;
+import <Storage_Flash_Adapter/if_Storage_Flash_Adapter.camkes>;
 
 component test_OS_FileSystem {
     control;
-    uses        if_OS_Storage   storage_rpc;
-    dataport    Buf             storage_dp;
+    uses        if_Storage_Flash_Adapter  adapter_rpc;
+    uses        if_OS_Storage             storage_rpc;
+    dataport    Buf                       storage_dp;
 }
