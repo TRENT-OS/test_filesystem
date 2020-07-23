@@ -8,8 +8,14 @@ import <std_connector.camkes>;
 
 import "components/Tests/test_OS_FileSystem.camkes";
 
-#include "RamDisk/RamDisk.camkes"
-DECLARE_COMPONENT_RamDisk(RamDisk)
+#include "TimeServer/camkes/TimeServer.camkes"
+DECLARE_COMPONENT_TimeServer(TimeServer)
+
+#include "RPI_SPI_Flash/RPI_SPI_Flash.camkes"
+DECLARE_COMPONENT_RPI_SPI_FLASH_DRV(RPI_SPI_Flash)
+
+// #include "RamDisk/RamDisk.camkes"
+// DECLARE_COMPONENT_RamDisk(RamDisk)
 
 #include "StorageServer/camkes/StorageServer.camkes"
 DECLARE_COMPONENT_StorageServer(StorageServer)
@@ -17,17 +23,28 @@ DECLARE_COMPONENT_StorageServer(StorageServer)
 assembly {
     composition {
         component   test_OS_FileSystem      unitTests;
-        component   RamDisk                 ramDisk;
+        // component   RamDisk                 ramDisk;
+
+        DECLARE_AND_CONNECT_INSTANCE_RPI_SPI_FLASH(
+            RPI_SPI_Flash, flash)
+
+        DECLARE_AND_CONNECT_INSTANCE_TimeServer(
+            TimeServer,
+            timeServer,
+            flash.timeServer_rpc)
+
 
         DECLARE_AND_CONNECT_INSTANCE_StorageServer(
             StorageServer, storageServer,
-            ramDisk.storage_rpc, ramDisk.storage_port,
+            flash.storage_rpc, flash.storage_port,
             unitTests.storage_rpc, unitTests.storage_dp)
     }
 
     configuration {
+        CONFIGURE_INSTANCE_RPI_SPI_FLASH(flash)
+
         CONFIGURE_INSTANCE_StorageServer(
             storageServer,
-            0, 1024*1024)
+            0, 64*1024)
     }
 }
