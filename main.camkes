@@ -55,6 +55,6 @@ assembly {
 
         CONFIGURE_INSTANCE_StorageServer(
             storageServer,
-            0, 128 * 1024)
+            0, 8 * 1024 * 1024)
     }
 }
