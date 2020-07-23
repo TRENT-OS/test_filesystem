@@ -30,9 +30,19 @@ DeclareCAmkESComponent(
         os_filesystem
 )
 
-DeclareCAmkESComponent_RamDisk(
-    RamDisk
-    system_config
+# DeclareCAmkESComponent_RamDisk(
+#     RamDisk
+#     system_config
+# )
+
+DeclareCAmkESComponent_TimeServer(
+    TimeServer
+)
+
+DeclareCAmkESComponent_RPI_SPI_Flash(
+    RPI_SPI_Flash
+    LIBS
+        TimeServer_client
 )
 
 DeclareCAmkESComponent_StorageServer(
