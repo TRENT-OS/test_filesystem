@@ -81,7 +81,7 @@ static void
 test_OS_FileSystemFile_getSize(
     OS_FileSystem_Handle_t hFs)
 {
-    size_t size;
+    off_t size;
 
     TEST_START();
 
