@@ -181,6 +181,41 @@ test_OS_FileSystem_fat(void)
     return OS_SUCCESS;
 }
 
+//------------------------------------------------------------------------------
+#define FORMAT_AND_MOUNT(_fs_, _fmt_, _mnt_) \
+    { \
+        TEST_SUCCESS(OS_FileSystem_init(&_fs_, &_fmt_)); \
+        TEST_SUCCESS(OS_FileSystem_format(_fs_)); \
+        TEST_SUCCESS(OS_FileSystem_free(_fs_)); \
+        TEST_SUCCESS(OS_FileSystem_init(&_fs_, &_mnt_));\
+        TEST_NOT_FOUND(OS_FileSystem_mount(_fs_)); \
+        TEST_SUCCESS(OS_FileSystem_free(_fs_)); \
+    }
+
+//------------------------------------------------------------------------------
+static OS_Error_t
+test_OS_FileSystem_mount_fail(void)
+{
+    OS_FileSystem_Handle_t hFs;
+
+    TEST_START();
+
+    // Format with FAT, mount with others
+    FORMAT_AND_MOUNT(hFs, fatCfg, littleCfg);
+    FORMAT_AND_MOUNT(hFs, fatCfg, spiffsCfg);
+
+    // Format with LittleFS, mount with others
+    FORMAT_AND_MOUNT(hFs, littleCfg, fatCfg);
+    FORMAT_AND_MOUNT(hFs, littleCfg, spiffsCfg);
+
+    // Format with SPIFFS, mount with others
+    FORMAT_AND_MOUNT(hFs, spiffsCfg, fatCfg);
+    FORMAT_AND_MOUNT(hFs, spiffsCfg, littleCfg);
+
+    TEST_FINISH();
+
+    return OS_SUCCESS;
+}
 
 //------------------------------------------------------------------------------
 #define DO_RUN_TEST_SCENARIO(_test_scenario_func_) \
@@ -205,6 +240,8 @@ int run()
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_little_fs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_fat );
+
+    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_mount_fail );
 
     Debug_LOG_INFO("All test scenarios completed");
 
