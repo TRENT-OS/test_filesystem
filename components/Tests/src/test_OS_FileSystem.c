@@ -183,16 +183,16 @@ test_OS_FileSystem_fat(void)
 
 
 //------------------------------------------------------------------------------
-#define DO_RUN_TEST_SCENARIO(_test_scnenario_func_) \
+#define DO_RUN_TEST_SCENARIO(_test_scenario_func_) \
     { \
-        OS_Error_t ret = _test_scnenario_func_(); \
+        OS_Error_t ret = _test_scenario_func_(); \
         if (ret != OS_SUCCESS) \
         { \
-            Debug_LOG_ERROR( #_test_scnenario_func_ "() FAILED, code %d", ret); \
+            Debug_LOG_ERROR( #_test_scenario_func_ "() FAILED, code %d", ret); \
         } \
         else \
         { \
-            Debug_LOG_INFO( #_test_scnenario_func_ "() successful"); \
+            Debug_LOG_INFO( #_test_scenario_func_ "() successful"); \
         } \
     }
 
