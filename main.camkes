@@ -14,6 +14,9 @@ DECLARE_COMPONENT_RamDisk(RamDisk)
 #include "StorageServer/camkes/StorageServer.camkes"
 DECLARE_COMPONENT_StorageServer(StorageServer)
 
+#include "EntropySource/camkes/EntropySource.camkes"
+DECLARE_COMPONENT_EntropySource(DummyEntropy)
+
 assembly {
     composition {
         component   test_OS_FileSystem      unitTests;
@@ -23,6 +26,10 @@ assembly {
             StorageServer, storageServer,
             ramDisk.storage_rpc, ramDisk.storage_port,
             unitTests.storage_rpc, unitTests.storage_dp)
+
+        DECLARE_AND_CONNECT_INSTANCE_EntropySource(
+            DummyEntropy, dummyEntropy,
+            unitTests.entropy_rpc, unitTests.entropy_port)
     }
 
     configuration {

@@ -27,6 +27,7 @@ DeclareCAmkESComponent(
         system_config
         os_core_api
         os_libs
+        os_crypto
         os_filesystem
 )
 
@@ -37,6 +38,10 @@ DeclareCAmkESComponent_RamDisk(
 
 DeclareCAmkESComponent_StorageServer(
     StorageServer
+)
+
+DeclareCAmkESComponent_EntropySource(
+    DummyEntropy
 )
 
 DeclareAndCreateCamkESSystem(main.camkes)

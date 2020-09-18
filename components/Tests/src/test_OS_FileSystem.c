@@ -3,6 +3,7 @@
  */
 
 #include "OS_FileSystem.h"
+#include "OS_Crypto.h"
 
 #include "TestMacros.h"
 
@@ -45,6 +46,13 @@ static OS_FileSystem_Config_t spiffsCfg =
         storage_rpc,
         storage_dp),
 };
+
+
+//------------------------------------------------------------------------------
+static if_OS_Storage_t storage =
+    IF_OS_STORAGE_ASSIGN(
+        storage_rpc,
+        storage_dp);
 
 
 // Private Functions -----------------------------------------------------------
@@ -182,35 +190,115 @@ test_OS_FileSystem_fat(void)
 }
 
 //------------------------------------------------------------------------------
-#define FORMAT_AND_MOUNT(_fs_, _fmt_, _mnt_) \
+static OS_Error_t
+hashStorage(
+    OS_Crypto_Handle_t hCrypto,
+    uint8_t*           hash,
+    size_t             len)
+{
+    OS_Error_t err;
+    OS_CryptoDigest_Handle_t hDigest;
+    size_t rd, sz = len;
+    off_t bsz, left, hashed;
+
+    /*
+     * Here we read the entire storage area and compute the SHA256 hash.
+     */
+
+    if ((err = OS_CryptoDigest_init(
+                   &hDigest,
+                   hCrypto,
+                   OS_CryptoDigest_ALG_SHA256)) != OS_SUCCESS)
+    {
+        return err;
+    }
+
+    if ((err = storage.getSize(&left)) != OS_SUCCESS)
+    {
+        goto out;
+    }
+
+    hashed  = 0;
+    bsz     = OS_Dataport_getSize(storage.dataport);
+
+    while (left > 0)
+    {
+        if ((err = storage.read(hashed, bsz, &rd)) != OS_SUCCESS)
+        {
+            goto out;
+        }
+        if ((err = OS_CryptoDigest_process(
+                       hDigest,
+                       OS_Dataport_getBuf(storage.dataport),
+                       rd)) != OS_SUCCESS)
+        {
+            goto out;
+        }
+
+        hashed  += rd;
+        left    -= rd;
+        bsz      = (left < bsz) ? left : bsz;
+    }
+
+    err = OS_CryptoDigest_finalize(hDigest, hash, &sz);
+
+out:
+    OS_CryptoDigest_free(hDigest);
+    return err;
+}
+
+//------------------------------------------------------------------------------
+/**
+ * This macro mounts a fs with one fs format, then computes a hash on it. Then it
+ * tries mounting with a different fs format, and again computes a hash. We expect
+ * that mounting fails, but the hash remains the same (i.e., mounting does not
+ * touch the storage) ...
+ */
+#define FORMAT_AND_MOUNT(_fs_, _fmt_, _mnt_, _cr_, _h0_, _h1_) \
     { \
         TEST_SUCCESS(OS_FileSystem_init(&_fs_, &_fmt_)); \
         TEST_SUCCESS(OS_FileSystem_format(_fs_)); \
         TEST_SUCCESS(OS_FileSystem_free(_fs_)); \
+        TEST_SUCCESS(hashStorage(_cr_, _h0_, sizeof(_h0_))); \
         TEST_SUCCESS(OS_FileSystem_init(&_fs_, &_mnt_));\
         TEST_NOT_FOUND(OS_FileSystem_mount(_fs_)); \
         TEST_SUCCESS(OS_FileSystem_free(_fs_)); \
+        TEST_SUCCESS(hashStorage(_cr_, _h1_, sizeof(_h1_))); \
+        TEST_TRUE(!memcmp(_h1_, _h0_, sizeof(_h0_))); \
     }
 
 //------------------------------------------------------------------------------
 static OS_Error_t
 test_OS_FileSystem_mount_fail(void)
 {
+    static OS_Crypto_Config_t cfgCrypto =
+    {
+        .mode = OS_Crypto_MODE_LIBRARY_ONLY,
+        .entropy = IF_OS_ENTROPY_ASSIGN(
+            entropy_rpc,
+            entropy_port),
+    };
     OS_FileSystem_Handle_t hFs;
+    OS_Crypto_Handle_t hCrypto;
+    uint8_t hash0[32], hash1[32];
 
     TEST_START();
 
+    TEST_SUCCESS(OS_Crypto_init(&hCrypto, &cfgCrypto));
+
     // Format with FAT, mount with others
-    FORMAT_AND_MOUNT(hFs, fatCfg, littleCfg);
-    FORMAT_AND_MOUNT(hFs, fatCfg, spiffsCfg);
+    FORMAT_AND_MOUNT(hFs, fatCfg, littleCfg, hCrypto, hash0, hash1);
+    FORMAT_AND_MOUNT(hFs, fatCfg, spiffsCfg, hCrypto, hash0, hash1);
 
     // Format with LittleFS, mount with others
-    FORMAT_AND_MOUNT(hFs, littleCfg, fatCfg);
-    FORMAT_AND_MOUNT(hFs, littleCfg, spiffsCfg);
+    FORMAT_AND_MOUNT(hFs, littleCfg, fatCfg, hCrypto, hash0, hash1);
+    FORMAT_AND_MOUNT(hFs, littleCfg, spiffsCfg, hCrypto, hash0, hash1);
 
     // Format with SPIFFS, mount with others
-    FORMAT_AND_MOUNT(hFs, spiffsCfg, fatCfg);
-    FORMAT_AND_MOUNT(hFs, spiffsCfg, littleCfg);
+    FORMAT_AND_MOUNT(hFs, spiffsCfg, fatCfg, hCrypto, hash0, hash1);
+    FORMAT_AND_MOUNT(hFs, spiffsCfg, littleCfg, hCrypto, hash0, hash1);
+
+    TEST_SUCCESS(OS_Crypto_free(hCrypto));
 
     TEST_FINISH();
 
