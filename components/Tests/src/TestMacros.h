@@ -70,6 +70,8 @@ static char testName[MAX_MSG_LEN] = "<undefined>";
     ((void)(((x) == err) || (__assert_fail(msg, __FILE__, __LINE__, __func__),0))); \
 }
 // These shorthands can be used to simply check function return codes
+#define TEST_NOT_PRESENT(fn) \
+    ASSERT_ERR(fn, OS_ERROR_DEVICE_NOT_PRESENT)
 #define TEST_INSUFF_SPACE(fn) \
     ASSERT_ERR(fn, OS_ERROR_INSUFFICIENT_SPACE)
 #define TEST_TOO_SMALL(fn) \
