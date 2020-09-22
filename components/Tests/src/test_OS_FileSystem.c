@@ -14,12 +14,22 @@
 void test_OS_FileSystemFile(
     OS_FileSystem_Handle_t hFs);
 
-
 //------------------------------------------------------------------------------
+static const OS_FileSystem_Format_t littleFsFormat =
+{
+    .littleFs = {
+        .readSize = 4096,
+        .writeSize = 4096,
+        .blockSize = 4096,
+        .blockCycles = 500,
+    }
+};
+
 static OS_FileSystem_Config_t littleCfg =
 {
     .type = OS_FileSystem_Type_LITTLEFS,
     .size = OS_FileSystem_USE_STORAGE_MAX,
+    .format = &littleFsFormat,
     .storage = IF_OS_STORAGE_ASSIGN(
         storage_rpc,
         storage_dp),
