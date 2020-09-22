@@ -17,6 +17,8 @@ DECLARE_COMPONENT_StorageServer(StorageServer)
 #include "EntropySource/camkes/EntropySource.camkes"
 DECLARE_COMPONENT_EntropySource(DummyEntropy)
 
+#include "system_config.h"
+
 assembly {
     composition {
         component   test_OS_FileSystem      unitTests;
@@ -35,6 +37,6 @@ assembly {
     configuration {
         CONFIGURE_INSTANCE_StorageServer(
             storageServer,
-            0, 1024*1024)
+            0, RAMDISK_SIZE_BYTES)
     }
 }
