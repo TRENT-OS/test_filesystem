@@ -8,8 +8,8 @@ import <std_connector.camkes>;
 
 import "components/Tests/test_OS_FileSystem.camkes";
 
-#include "RamDisk/RamDisk.camkes"
-DECLARE_COMPONENT_RamDisk(RamDisk)
+#include "components/RemovableDisk/RemovableDisk.camkes"
+DECLARE_COMPONENT_RemovableDisk(RemovableDisk)
 
 #include "StorageServer/camkes/StorageServer.camkes"
 DECLARE_COMPONENT_StorageServer(StorageServer)
@@ -22,11 +22,14 @@ DECLARE_COMPONENT_EntropySource(DummyEntropy)
 assembly {
     composition {
         component   test_OS_FileSystem      unitTests;
-        component   RamDisk                 ramDisk;
+
+        DECLARE_AND_CONNECT_INSTANCE_RemovableDisk(
+            RemovableDisk, disk,
+            unitTests.disk_rpc)
 
         DECLARE_AND_CONNECT_INSTANCE_StorageServer(
             StorageServer, storageServer,
-            ramDisk.storage_rpc, ramDisk.storage_port,
+            disk.storage_rpc,      disk.storage_port,
             unitTests.storage_rpc, unitTests.storage_dp)
 
         DECLARE_AND_CONNECT_INSTANCE_EntropySource(

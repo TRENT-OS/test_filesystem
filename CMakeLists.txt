@@ -13,6 +13,14 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
 #-------------------------------------------------------------------------------
+project(RemovableDisk_client C)
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME}
+    INTERFACE
+        "${CMAKE_CURRENT_LIST_DIR}/components/RemovableDisk/include"
+)
+
+#-------------------------------------------------------------------------------
 project(test_filesystem C)
 
 DeclareCAmkESComponent(
@@ -29,11 +37,20 @@ DeclareCAmkESComponent(
         os_libs
         os_crypto
         os_filesystem
+        RemovableDisk_client
 )
 
-DeclareCAmkESComponent_RamDisk(
-    RamDisk
-    system_config
+DeclareCAmkESComponent(
+    RemovableDisk
+    SOURCES
+        components/RemovableDisk/src/storage_rpc.c
+    C_FLAGS
+        -Wall
+        -Werror
+    LIBS
+        system_config
+        os_core_api
+        os_libs
 )
 
 DeclareCAmkESComponent_StorageServer(

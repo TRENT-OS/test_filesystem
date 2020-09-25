@@ -5,14 +5,19 @@
 import <if_OS_Storage.camkes>;
 import <if_OS_Entropy.camkes>;
 
+import "../RemovableDisk/if_RemovableDisk.camkes";
+
 component test_OS_FileSystem {
     control;
 
     // For underlying storage
-    uses        if_OS_Storage   storage_rpc;
-    dataport    Buf             storage_dp;
+    uses        if_OS_Storage       storage_rpc;
+    dataport    Buf                 storage_dp;
+    // Extra interface to trigger "medium removal"
+    uses        if_RemovableDisk    disk_rpc;
 
     // For EntropySource component
-    uses        if_OS_Entropy   entropy_rpc;
-    dataport    Buf             entropy_port;
+    uses        if_OS_Entropy       entropy_rpc;
+    dataport    Buf                 entropy_port;
+    
 }

@@ -1,0 +1,12 @@
+/* Copyright (C) 2020, Hensoldt Cyber GmbH */
+
+procedure if_RemovableDisk {
+
+    include "OS_Error.h";
+
+    OS_Error_t
+    triggerRemoval(
+        in int ops
+    );
+
+};

@@ -1,0 +1,33 @@
+/* Copyright (C) 2020, HENSOLDT Cyber GmbH */
+
+import <if_OS_Storage.camkes>;
+import "components/RemovableDisk/if_RemovableDisk.camkes";
+
+//------------------------------------------------------------------------------
+// Component
+
+#define DECLARE_COMPONENT_RemovableDisk(                \
+    _name_)                                             \
+                                                        \
+    component _name_ {                                  \
+        provides    if_RemovableDisk    disk_rpc;       \
+        provides    if_OS_Storage       storage_rpc;    \
+        dataport    Buf                 storage_port;   \
+    }
+
+
+//------------------------------------------------------------------------------
+// Instance Connection
+
+#define DECLARE_AND_CONNECT_INSTANCE_RemovableDisk(     \
+    _name_,                                             \
+    _inst_,                                             \
+    _caller_rpc_)                                       \
+                                                        \
+    component   _name_  _inst_;                         \
+                                                        \
+    connection  seL4RPCCall                             \
+        _name_ ## _ ## _inst_ ## _rpc   (               \
+            from    _caller_rpc_,                       \
+            to      _inst_.disk_rpc                     \
+        );
