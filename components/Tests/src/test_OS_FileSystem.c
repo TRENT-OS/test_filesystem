@@ -14,6 +14,8 @@
 
 void test_OS_FileSystemFile(
     OS_FileSystem_Handle_t hFs);
+void test_OS_FileSystemFile_removal(
+    OS_FileSystem_Handle_t hFs);
 
 //------------------------------------------------------------------------------
 static const OS_FileSystem_Format_t littleFsFormat =
@@ -163,6 +165,8 @@ test_OS_FileSystem_removal(
 
     test_OS_FileSystem_format(hFs, false);
     test_OS_FileSystem_mount(hFs,  false);
+
+    test_OS_FileSystemFile_removal(hFs);
 
     DISK_REMOVE;
     // We don't expect unmount to fail, because it should actually not touch
