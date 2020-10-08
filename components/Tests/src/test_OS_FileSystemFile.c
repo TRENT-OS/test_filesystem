@@ -22,9 +22,10 @@ static OS_FileSystemFile_Handle_t hFile;
 static void
 test_OS_FileSystemFile_open(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -45,11 +46,12 @@ test_OS_FileSystemFile_open(
 static void
 test_OS_FileSystemFile_close(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
     OS_Error_t err;
 
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     err = OS_FileSystemFile_close(hFs, hFile);
     if (expectRemoval)
@@ -70,13 +72,14 @@ test_OS_FileSystemFile_close(
 static void
 test_OS_FileSystemFile_read(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
     uint8_t buf[sizeof(fileData)];
     off_t to_read, read;
     OS_Error_t err;
 
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     to_read = fileSize;
     read    = 0;
@@ -106,12 +109,13 @@ test_OS_FileSystemFile_read(
 static void
 test_OS_FileSystemFile_write(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
     off_t to_write, written;
     OS_Error_t err;
 
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     to_write = fileSize;
     written  = 0;
@@ -145,9 +149,10 @@ test_OS_FileSystemFile_write(
 static void
 test_OS_FileSystemFile_delete(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -164,11 +169,12 @@ test_OS_FileSystemFile_delete(
 static void
 test_OS_FileSystemFile_getSize(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
     off_t size;
 
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -187,46 +193,48 @@ test_OS_FileSystemFile_getSize(
 
 void
 test_OS_FileSystemFile(
-    OS_FileSystem_Handle_t hFs)
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type)
 {
-    test_OS_FileSystemFile_open(hFs, false);
-    test_OS_FileSystemFile_write(hFs, false);
-    test_OS_FileSystemFile_read(hFs, false);
-    test_OS_FileSystemFile_close(hFs, false);
+    test_OS_FileSystemFile_open(hFs, type, false);
+    test_OS_FileSystemFile_write(hFs, type, false);
+    test_OS_FileSystemFile_read(hFs, type, false);
+    test_OS_FileSystemFile_close(hFs, type, false);
 
-    test_OS_FileSystemFile_getSize(hFs, false);
-    test_OS_FileSystemFile_delete(hFs, false);
+    test_OS_FileSystemFile_getSize(hFs, type, false);
+    test_OS_FileSystemFile_delete(hFs, type, false);
 }
 
 void
 test_OS_FileSystemFile_removal(
-    OS_FileSystem_Handle_t hFs)
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type)
 {
     DISK_REMOVE;
-    test_OS_FileSystemFile_open(hFs, true);
+    test_OS_FileSystemFile_open(hFs, type, true);
     DISK_ATTACH;
 
     // Now actually open the file
-    test_OS_FileSystemFile_open(hFs, false);
+    test_OS_FileSystemFile_open(hFs, type, false);
 
     DISK_REMOVE;
-    test_OS_FileSystemFile_write(hFs, true);
+    test_OS_FileSystemFile_write(hFs, type, true);
     DISK_ATTACH;
 
     // Writing above should fail at some point, so now we do write something
     // such that the following read has something to fail on..
-    test_OS_FileSystemFile_close(hFs, false);
-    test_OS_FileSystemFile_open(hFs, false);
-    test_OS_FileSystemFile_write(hFs, false);
+    test_OS_FileSystemFile_close(hFs, type, false);
+    test_OS_FileSystemFile_open(hFs, type, false);
+    test_OS_FileSystemFile_write(hFs, type, false);
 
     DISK_REMOVE;
-    test_OS_FileSystemFile_read(hFs, true);
-    test_OS_FileSystemFile_close(hFs, true);
-    test_OS_FileSystemFile_delete(hFs, true);
+    test_OS_FileSystemFile_read(hFs, type, true);
+    test_OS_FileSystemFile_close(hFs, type, true);
+    test_OS_FileSystemFile_delete(hFs, type, true);
 
     // This is a trick; we first delete the file and then ask for its size, thus
     // effectively forcing the fs layer to check if the file may actually be on
     // storage.. thus triggering the expected fault.
-    test_OS_FileSystemFile_getSize(hFs, true);
+    test_OS_FileSystemFile_getSize(hFs, type, true);
     DISK_ATTACH;
 }

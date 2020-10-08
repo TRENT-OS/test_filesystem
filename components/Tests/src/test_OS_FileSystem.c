@@ -13,9 +13,11 @@
 #include <string.h>
 
 void test_OS_FileSystemFile(
-    OS_FileSystem_Handle_t hFs);
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type);
 void test_OS_FileSystemFile_removal(
-    OS_FileSystem_Handle_t hFs);
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type);
 
 //------------------------------------------------------------------------------
 static const OS_FileSystem_Format_t littleFsFormat =
@@ -75,9 +77,10 @@ static if_OS_Storage_t storage =
 static void
 test_OS_FileSystem_mount(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -96,9 +99,10 @@ test_OS_FileSystem_mount(
 static void
 test_OS_FileSystem_unmount(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -117,9 +121,10 @@ test_OS_FileSystem_unmount(
 static void
 test_OS_FileSystem_format(
     OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval);
+    TEST_START(expectRemoval, type);
 
     if (expectRemoval)
     {
@@ -137,41 +142,43 @@ test_OS_FileSystem_format(
 //------------------------------------------------------------------------------
 static void
 test_OS_FileSystem(
-    OS_FileSystem_Handle_t hFs)
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type)
 {
-    test_OS_FileSystem_format(hFs, false);
-    test_OS_FileSystem_mount(hFs, false);
+    test_OS_FileSystem_format(hFs, type, false);
+    test_OS_FileSystem_mount(hFs, type, false);
 
-    test_OS_FileSystemFile(hFs);
+    test_OS_FileSystemFile(hFs, type);
 
-    test_OS_FileSystem_unmount(hFs, false);
+    test_OS_FileSystem_unmount(hFs, type, false);
 }
 
 
 //------------------------------------------------------------------------------
 static void
 test_OS_FileSystem_removal(
-    OS_FileSystem_Handle_t hFs)
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type)
 {
     DISK_REMOVE;
-    test_OS_FileSystem_format(hFs, true);
+    test_OS_FileSystem_format(hFs, type, true);
     DISK_ATTACH;
 
-    test_OS_FileSystem_format(hFs, false);
+    test_OS_FileSystem_format(hFs, type, false);
 
     DISK_REMOVE;
-    test_OS_FileSystem_mount(hFs, true);
+    test_OS_FileSystem_mount(hFs, type, true);
     DISK_ATTACH;
 
-    test_OS_FileSystem_format(hFs, false);
-    test_OS_FileSystem_mount(hFs,  false);
+    test_OS_FileSystem_format(hFs, type, false);
+    test_OS_FileSystem_mount(hFs, type,  false);
 
-    test_OS_FileSystemFile_removal(hFs);
+    test_OS_FileSystemFile_removal(hFs, type);
 
     DISK_REMOVE;
     // We don't expect unmount to fail, because it should actually not touch
     // the disk (and thus not perform any I/O which would trigger the error)
-    test_OS_FileSystem_unmount(hFs, false);
+    test_OS_FileSystem_unmount(hFs, type, false);
     DISK_ATTACH;
 }
 
@@ -194,8 +201,8 @@ test_OS_FileSystem_little_fs(void)
         return OS_ERROR_GENERIC;
     }
 
-    test_OS_FileSystem(hFs);
-    test_OS_FileSystem_removal(hFs);
+    test_OS_FileSystem(hFs, littleCfg.type);
+    test_OS_FileSystem_removal(hFs, littleCfg.type);
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
@@ -220,8 +227,8 @@ test_OS_FileSystem_spiffs(void)
         return OS_ERROR_GENERIC;
     }
 
-    test_OS_FileSystem(hFs);
-    test_OS_FileSystem_removal(hFs);
+    test_OS_FileSystem(hFs, spiffsCfg.type);
+    test_OS_FileSystem_removal(hFs, spiffsCfg.type);
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
@@ -246,8 +253,8 @@ test_OS_FileSystem_fat(void)
         return OS_ERROR_GENERIC;
     }
 
-    test_OS_FileSystem(hFs);
-    test_OS_FileSystem_removal(hFs);
+    test_OS_FileSystem(hFs, fatCfg.type);
+    test_OS_FileSystem_removal(hFs, fatCfg.type);
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
