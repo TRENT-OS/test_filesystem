@@ -11,13 +11,8 @@ import "components/Tests/test_OS_FileSystem.camkes";
 #include "components/RemovableDisk/RemovableDisk.camkes"
 DECLARE_COMPONENT_RemovableDisk(RemovableDisk)
 
-#include "StorageServer/camkes/StorageServer.camkes"
-DECLARE_COMPONENT_StorageServer(StorageServer)
-
 #include "EntropySource/camkes/EntropySource.camkes"
 DECLARE_COMPONENT_EntropySource(DummyEntropy)
-
-#include "system_config.h"
 
 assembly {
     composition {
@@ -25,21 +20,10 @@ assembly {
 
         DECLARE_AND_CONNECT_INSTANCE_RemovableDisk(
             RemovableDisk, disk,
-            unitTests.disk_rpc)
-
-        DECLARE_AND_CONNECT_INSTANCE_StorageServer(
-            StorageServer, storageServer,
-            disk.storage_rpc,      disk.storage_port,
-            unitTests.storage_rpc, unitTests.storage_dp)
+            unitTests.disk_rpc, unitTests.storage_rpc, unitTests.storage_dp)
 
         DECLARE_AND_CONNECT_INSTANCE_EntropySource(
             DummyEntropy, dummyEntropy,
             unitTests.entropy_rpc, unitTests.entropy_port)
-    }
-
-    configuration {
-        CONFIGURE_INSTANCE_StorageServer(
-            storageServer,
-            0, RAMDISK_SIZE_BYTES)
     }
 }

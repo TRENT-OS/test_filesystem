@@ -53,10 +53,6 @@ DeclareCAmkESComponent(
         os_libs
 )
 
-DeclareCAmkESComponent_StorageServer(
-    StorageServer
-)
-
 DeclareCAmkESComponent_EntropySource(
     DummyEntropy
 )
