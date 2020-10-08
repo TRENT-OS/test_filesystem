@@ -190,19 +190,20 @@ test_OS_FileSystem_removal(
 
 //------------------------------------------------------------------------------
 static OS_Error_t
-test_OS_FileSystem_little_fs(void)
+test_OS_FileSystem_cfg(
+    OS_FileSystem_Config_t* cfg)
 {
     OS_Error_t ret;
     OS_FileSystem_Handle_t hFs;
 
-    if ((ret = OS_FileSystem_init(&hFs, &littleCfg)) != OS_SUCCESS)
+    if ((ret = OS_FileSystem_init(&hFs, cfg)) != OS_SUCCESS)
     {
         Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
         return OS_ERROR_GENERIC;
     }
 
-    test_OS_FileSystem(hFs, littleCfg.type);
-    test_OS_FileSystem_removal(hFs, littleCfg.type);
+    test_OS_FileSystem(hFs, cfg->type);
+    test_OS_FileSystem_removal(hFs, cfg->type);
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
@@ -211,6 +212,13 @@ test_OS_FileSystem_little_fs(void)
     }
 
     return OS_SUCCESS;
+}
+
+//------------------------------------------------------------------------------
+static OS_Error_t
+test_OS_FileSystem_little_fs(void)
+{
+    return test_OS_FileSystem_cfg(&littleCfg);
 }
 
 
@@ -218,25 +226,7 @@ test_OS_FileSystem_little_fs(void)
 static OS_Error_t
 test_OS_FileSystem_spiffs(void)
 {
-    OS_Error_t ret;
-    OS_FileSystem_Handle_t hFs;
-
-    if ((ret = OS_FileSystem_init(&hFs, &spiffsCfg)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %i", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    test_OS_FileSystem(hFs, spiffsCfg.type);
-    test_OS_FileSystem_removal(hFs, spiffsCfg.type);
-
-    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %i", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    return OS_SUCCESS;
+    return test_OS_FileSystem_cfg(&spiffsCfg);
 }
 
 
@@ -244,25 +234,7 @@ test_OS_FileSystem_spiffs(void)
 static OS_Error_t
 test_OS_FileSystem_fat(void)
 {
-    OS_Error_t ret;
-    OS_FileSystem_Handle_t hFs;
-
-    if ((ret = OS_FileSystem_init(&hFs, &fatCfg)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    test_OS_FileSystem(hFs, fatCfg.type);
-    test_OS_FileSystem_removal(hFs, fatCfg.type);
-
-    if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
-    {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
-        return OS_ERROR_GENERIC;
-    }
-
-    return OS_SUCCESS;
+    return test_OS_FileSystem_cfg(&fatCfg);
 }
 
 //------------------------------------------------------------------------------
