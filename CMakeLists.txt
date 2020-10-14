@@ -1,5 +1,5 @@
 #
-# Test Filesystem as lib
+# Test Filesystem as a server
 #
 # Copyright (C) 2020, Hensoldt Cyber GmbH
 #
