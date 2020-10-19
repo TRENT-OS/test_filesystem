@@ -321,7 +321,7 @@ test_OS_FileSystem_mount_fail(void)
 {
     static OS_Crypto_Config_t cfgCrypto =
     {
-        .mode = OS_Crypto_MODE_LIBRARY_ONLY,
+        .mode = OS_Crypto_MODE_LIBRARY,
         .entropy = IF_OS_ENTROPY_ASSIGN(
             entropy_rpc,
             entropy_port),
