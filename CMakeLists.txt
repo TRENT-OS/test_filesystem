@@ -53,7 +53,7 @@ DeclareCAmkESComponent(
         os_libs
 )
 
-DeclareCAmkESComponent_EntropySource(
+EntropySource_DeclareCAmkESComponent(
     DummyEntropy
 )
 
