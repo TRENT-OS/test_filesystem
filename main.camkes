@@ -12,18 +12,19 @@ import "components/Tests/test_OS_FileSystem.camkes";
 DECLARE_COMPONENT_RemovableDisk(RemovableDisk)
 
 #include "EntropySource/camkes/EntropySource.camkes"
-DECLARE_COMPONENT_EntropySource(DummyEntropy)
+EntropySource_COMPONENT_DECLARE(DummyEntropy)
 
 assembly {
     composition {
         component   test_OS_FileSystem      unitTests;
+        component   DummyEntropy            dummyEntropy;
 
         DECLARE_AND_CONNECT_INSTANCE_RemovableDisk(
             RemovableDisk, disk,
             unitTests.disk_rpc, unitTests.storage_rpc, unitTests.storage_dp)
 
-        DECLARE_AND_CONNECT_INSTANCE_EntropySource(
-            DummyEntropy, dummyEntropy,
+        EntropySource_INSTANCE_CONNECT_CLIENT(
+            dummyEntropy,
             unitTests.entropy_rpc, unitTests.entropy_port)
     }
 }
