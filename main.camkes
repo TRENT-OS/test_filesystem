@@ -12,7 +12,7 @@ import "components/Tests/test_OS_FileSystem.camkes";
 DECLARE_COMPONENT_RemovableDisk(RemovableDisk)
 
 #include "EntropySource/camkes/EntropySource.camkes"
-EntropySource_COMPONENT_DECLARE(DummyEntropy)
+EntropySource_COMPONENT_DEFINE(DummyEntropy)
 
 assembly {
     composition {
