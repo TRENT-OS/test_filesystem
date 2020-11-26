@@ -4,7 +4,7 @@
 
 #include "OS_FileSystem.h"
 
-#include "TestMacros.h"
+#include "LibMacros/Test.h"
 #include "RemovableDisk.h"
 
 #include <string.h>

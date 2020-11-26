@@ -5,7 +5,7 @@
 #include "OS_FileSystem.h"
 #include "OS_Crypto.h"
 
-#include "TestMacros.h"
+#include "LibMacros/Test.h"
 #include "RemovableDisk.h"
 
 #include <camkes.h>
