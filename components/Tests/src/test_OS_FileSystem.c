@@ -20,28 +20,6 @@ void test_OS_FileSystemFile_removal(
     OS_FileSystem_Type_t type);
 
 //------------------------------------------------------------------------------
-static const OS_FileSystem_Format_t littleFsFormat =
-{
-    .littleFs = {
-        .readSize = 4096,
-        .writeSize = 4096,
-        .blockSize = 4096,
-        .blockCycles = 500,
-    }
-};
-
-static OS_FileSystem_Config_t littleCfg =
-{
-    .type = OS_FileSystem_Type_LITTLEFS,
-    .size = OS_FileSystem_USE_STORAGE_MAX,
-    .format = &littleFsFormat,
-    .storage = IF_OS_STORAGE_ASSIGN(
-        storage_rpc,
-        storage_dp),
-};
-
-
-//------------------------------------------------------------------------------
 static OS_FileSystem_Config_t fatCfg =
 {
     .type = OS_FileSystem_Type_FATFS,
@@ -216,14 +194,6 @@ test_OS_FileSystem_cfg(
 
 //------------------------------------------------------------------------------
 static OS_Error_t
-test_OS_FileSystem_little_fs(void)
-{
-    return test_OS_FileSystem_cfg(&littleCfg);
-}
-
-
-//------------------------------------------------------------------------------
-static OS_Error_t
 test_OS_FileSystem_spiffs(void)
 {
     return test_OS_FileSystem_cfg(&spiffsCfg);
@@ -335,16 +305,10 @@ test_OS_FileSystem_mount_fail(void)
     TEST_SUCCESS(OS_Crypto_init(&hCrypto, &cfgCrypto));
 
     // Format with FAT, mount with others
-    FORMAT_AND_MOUNT(hFs, fatCfg, littleCfg, hCrypto, hash0, hash1);
     FORMAT_AND_MOUNT(hFs, fatCfg, spiffsCfg, hCrypto, hash0, hash1);
-
-    // Format with LittleFS, mount with others
-    FORMAT_AND_MOUNT(hFs, littleCfg, fatCfg, hCrypto, hash0, hash1);
-    FORMAT_AND_MOUNT(hFs, littleCfg, spiffsCfg, hCrypto, hash0, hash1);
 
     // Format with SPIFFS, mount with others
     FORMAT_AND_MOUNT(hFs, spiffsCfg, fatCfg, hCrypto, hash0, hash1);
-    FORMAT_AND_MOUNT(hFs, spiffsCfg, littleCfg, hCrypto, hash0, hash1);
 
     TEST_SUCCESS(OS_Crypto_free(hCrypto));
 
@@ -373,7 +337,6 @@ test_OS_FileSystem_mount_fail(void)
 //------------------------------------------------------------------------------
 int run()
 {
-    DO_RUN_TEST_SCENARIO( test_OS_FileSystem_little_fs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_spiffs );
     DO_RUN_TEST_SCENARIO( test_OS_FileSystem_fat );
 
