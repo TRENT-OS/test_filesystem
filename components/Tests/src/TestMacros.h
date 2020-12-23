@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "LibDebug/Debug.h"
+#include "lib_debug/Debug.h"
 
 #include <string.h>
 #include <assert.h>

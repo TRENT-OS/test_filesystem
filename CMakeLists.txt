@@ -34,7 +34,7 @@ DeclareCAmkESComponent(
     LIBS
         system_config
         os_core_api
-        os_libs
+        lib_debug
         os_crypto
         os_filesystem
         RemovableDisk_client
@@ -50,7 +50,7 @@ DeclareCAmkESComponent(
     LIBS
         system_config
         os_core_api
-        os_libs
+        lib_debug
 )
 
 EntropySource_DeclareCAmkESComponent(
