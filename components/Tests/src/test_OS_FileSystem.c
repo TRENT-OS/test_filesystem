@@ -5,7 +5,7 @@
 #include "OS_FileSystem.h"
 #include "OS_Crypto.h"
 
-#include "TestMacros.h"
+#include "lib_macros/Test.h"
 #include "RemovableDisk.h"
 
 #include <camkes.h>
@@ -80,11 +80,11 @@ test_OS_FileSystem_mount(
     OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystem_mount(hFs));
+        ASSERT_EQ_OS_ERR(OS_ERROR_DEVICE_NOT_PRESENT, OS_FileSystem_mount(hFs));
     }
     else
     {
@@ -102,11 +102,13 @@ test_OS_FileSystem_unmount(
     OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystem_unmount(hFs));
+        ASSERT_EQ_OS_ERR(
+            OS_ERROR_DEVICE_NOT_PRESENT,
+            OS_FileSystem_unmount(hFs));
     }
     else
     {
@@ -124,11 +126,13 @@ test_OS_FileSystem_format(
     OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystem_format(hFs));
+        ASSERT_EQ_OS_ERR(
+            OS_ERROR_DEVICE_NOT_PRESENT,
+            OS_FileSystem_format(hFs));
     }
     else
     {

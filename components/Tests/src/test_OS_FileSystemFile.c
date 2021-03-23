@@ -4,7 +4,7 @@
 
 #include "OS_FileSystem.h"
 
-#include "TestMacros.h"
+#include "lib_macros/Test.h"
 #include "RemovableDisk.h"
 
 #include <string.h>
@@ -25,13 +25,16 @@ test_OS_FileSystemFile_open(
     OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystemFile_open(hFs, &hFile, fileName,
-                                                OS_FileSystem_OpenMode_RDWR,
-                                                OS_FileSystem_OpenFlags_CREATE));
+        ASSERT_EQ_OS_ERR(
+            OS_ERROR_DEVICE_NOT_PRESENT,
+            OS_FileSystemFile_open(
+                hFs, &hFile, fileName,
+                OS_FileSystem_OpenMode_RDWR,
+                OS_FileSystem_OpenFlags_CREATE));
     }
     else
     {
@@ -51,7 +54,7 @@ test_OS_FileSystemFile_close(
 {
     OS_Error_t err;
 
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     err = OS_FileSystemFile_close(hFs, hFile);
     if (expectRemoval)
@@ -79,7 +82,7 @@ test_OS_FileSystemFile_read(
     off_t to_read, read;
     OS_Error_t err;
 
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     to_read = fileSize;
     read    = 0;
@@ -95,7 +98,7 @@ test_OS_FileSystemFile_read(
         {
             // We get the NOT_PRESENT immediately, so there is no need to keep
             // trying further..
-            TEST_NOT_PRESENT(err);
+            ASSERT_EQ_OS_ERR(OS_ERROR_DEVICE_NOT_PRESENT, err);
             break;
         }
 
@@ -115,7 +118,7 @@ test_OS_FileSystemFile_write(
     off_t to_write, written;
     OS_Error_t err;
 
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     to_write = fileSize;
     written  = 0;
@@ -152,11 +155,13 @@ test_OS_FileSystemFile_delete(
     OS_FileSystem_Type_t type,
     bool expectRemoval)
 {
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystemFile_delete(hFs, fileName));
+        ASSERT_EQ_OS_ERR(
+            OS_ERROR_DEVICE_NOT_PRESENT,
+            OS_FileSystemFile_delete(hFs, fileName));
     }
     else
     {
@@ -174,11 +179,13 @@ test_OS_FileSystemFile_getSize(
 {
     off_t size;
 
-    TEST_START(expectRemoval, type);
+    TEST_START("i", expectRemoval, "i", type);
 
     if (expectRemoval)
     {
-        TEST_NOT_PRESENT(OS_FileSystemFile_getSize(hFs, fileName, &size));
+        ASSERT_EQ_OS_ERR(
+            OS_ERROR_DEVICE_NOT_PRESENT,
+            OS_FileSystemFile_getSize(hFs, fileName, &size));
     }
     else
     {

@@ -35,6 +35,7 @@ DeclareCAmkESComponent(
         system_config
         os_core_api
         lib_debug
+        lib_macros
         os_crypto
         os_filesystem
         RemovableDisk_client
