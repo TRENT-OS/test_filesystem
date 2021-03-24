@@ -198,7 +198,9 @@ test_OS_FileSystem_cfg(
 
     if ((ret = OS_FileSystem_init(&hFs, cfg)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_init() failed, code %d", ret);
+        Debug_LOG_ERROR(
+            "OS_FileSystem_init() failed, code %s(%d)",
+            OS_ERROR_TO_STRING(ret), ret);
         return OS_ERROR_GENERIC;
     }
 
@@ -207,7 +209,9 @@ test_OS_FileSystem_cfg(
 
     if ((ret = OS_FileSystem_free(hFs)) != OS_SUCCESS)
     {
-        Debug_LOG_ERROR("OS_FileSystem_free() failed, code %d", ret);
+        Debug_LOG_ERROR(
+            "OS_FileSystem_free() failed, code %s(%d)",
+            OS_ERROR_TO_STRING(ret), ret);
         return OS_ERROR_GENERIC;
     }
 
@@ -359,7 +363,9 @@ test_OS_FileSystem_mount_fail(void)
         OS_Error_t ret = _test_scenario_func_(); \
         if (ret != OS_SUCCESS) \
         { \
-            Debug_LOG_ERROR( #_test_scenario_func_ "() FAILED, code %d", ret); \
+            Debug_LOG_ERROR( \
+                #_test_scenario_func_ "() FAILED, code %s(%d)", \
+                OS_ERROR_TO_STRING(ret), ret); \
         } \
         else \
         { \
