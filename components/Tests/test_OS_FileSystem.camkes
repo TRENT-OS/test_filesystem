@@ -12,12 +12,12 @@ component test_OS_FileSystem {
 
     // For underlying storage
     uses        if_OS_Storage       storage_rpc;
-    dataport    Buf                 storage_dp;
+    dataport    Buf                 storage_port;
     // Extra interface to trigger "medium removal"
     uses        if_RemovableDisk    disk_rpc;
 
     // For EntropySource component
     uses        if_OS_Entropy       entropy_rpc;
     dataport    Buf                 entropy_port;
-    
+
 }

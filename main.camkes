@@ -21,7 +21,7 @@ assembly {
 
         DECLARE_AND_CONNECT_INSTANCE_RemovableDisk(
             RemovableDisk, disk,
-            unitTests.disk_rpc, unitTests.storage_rpc, unitTests.storage_dp)
+            unitTests.disk_rpc, unitTests.storage_rpc, unitTests.storage_port)
 
         EntropySource_INSTANCE_CONNECT_CLIENT(
             dummyEntropy,

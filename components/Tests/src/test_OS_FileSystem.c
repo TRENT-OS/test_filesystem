@@ -37,7 +37,7 @@ static OS_FileSystem_Config_t littleCfg =
     .format = &littleFsFormat,
     .storage = IF_OS_STORAGE_ASSIGN(
         storage_rpc,
-        storage_dp),
+        storage_port),
 };
 
 
@@ -48,7 +48,7 @@ static OS_FileSystem_Config_t fatCfg =
     .size = OS_FileSystem_USE_STORAGE_MAX,
     .storage = IF_OS_STORAGE_ASSIGN(
         storage_rpc,
-        storage_dp),
+        storage_port),
 };
 
 
@@ -59,7 +59,7 @@ static OS_FileSystem_Config_t spiffsCfg =
     .size = OS_FileSystem_USE_STORAGE_MAX,
     .storage = IF_OS_STORAGE_ASSIGN(
         storage_rpc,
-        storage_dp),
+        storage_port),
 };
 
 
@@ -67,7 +67,7 @@ static OS_FileSystem_Config_t spiffsCfg =
 static if_OS_Storage_t storage =
     IF_OS_STORAGE_ASSIGN(
         storage_rpc,
-        storage_dp);
+        storage_port);
 
 
 // Private Functions -----------------------------------------------------------
