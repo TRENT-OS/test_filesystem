@@ -1,7 +1,7 @@
-/**
- * Copyright (C) 2019, Hensoldt Cyber GmbH
- *
+/*
  * OS libraries configurations
+ *
+ * Copyright (C) 2019-2021, HENSOLDT Cyber GmbH
  */
 
 
