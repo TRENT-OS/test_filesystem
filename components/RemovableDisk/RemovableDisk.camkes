@@ -13,6 +13,7 @@ import "components/RemovableDisk/if_RemovableDisk.camkes";
         provides    if_RemovableDisk    disk_rpc;       \
         provides    if_OS_Storage       storage_rpc;    \
         dataport    Buf                 storage_port;   \
+        attribute   uint64_t            storage_size;   \
     }
 
 

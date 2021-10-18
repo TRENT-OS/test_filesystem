@@ -10,7 +10,7 @@
 
 #include "system_config.h"
 
-static uint8_t storage[RAMDISK_SIZE_BYTES] = { 0u };
+static uint8_t storage[CAMKES_CONST_ATTR(storage_size)] = { 0u };
 
 static int opsCountdown = -1;
 

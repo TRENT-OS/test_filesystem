@@ -27,4 +27,8 @@ assembly {
             dummyEntropy,
             unitTests.entropy_rpc, unitTests.entropy_port)
     }
+
+    configuration {
+        disk.storage_size = (1 * 1024 * 1024);
+    }
 }
