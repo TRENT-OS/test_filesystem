@@ -151,7 +151,7 @@ test_OS_FileSystem_maxHandles(
 {
     TEST_START("i", type);
 
-    const uint8_t cMaxFileHandles = 8; // max 255
+    const uint8_t cMaxFileHandles = 64; // max 255
 
     // The filename for a file handle is formatted like "testfile_123".
     const char cFilenameFormat[] = "testfile_%d";
