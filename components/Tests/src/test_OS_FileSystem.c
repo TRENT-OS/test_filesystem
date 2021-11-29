@@ -145,12 +145,72 @@ test_OS_FileSystem_format(
 
 //------------------------------------------------------------------------------
 static void
+test_OS_FileSystem_maxHandles(
+    OS_FileSystem_Handle_t hFs,
+    OS_FileSystem_Type_t type)
+{
+    TEST_START("i", type);
+
+    const uint8_t cMaxFileHandles = 8; // max 255
+
+    // The filename for a file handle is formatted like "testfile_123".
+    const char cFilenameFormat[] = "testfile_%d";
+    // Max size of a filename (w/o format specifier w/ up to 3 digits).
+    const size_t cMaxFilenameSize = sizeof(cFilenameFormat) - 2 + 3;
+
+    OS_FileSystemFile_Handle_t fileHandles[cMaxFileHandles];
+    char filename[cMaxFilenameSize];
+
+    //--------------------------------------------------------------------------
+    // Open max number of file handles
+
+    for (uint8_t idx = 0; idx < cMaxFileHandles; idx++)
+    {
+        snprintf(filename, cMaxFilenameSize, cFilenameFormat, idx);
+
+        TEST_SUCCESS(
+            OS_FileSystemFile_open(hFs, &fileHandles[idx], filename,
+                                   OS_FileSystem_OpenMode_RDONLY,
+                                   OS_FileSystem_OpenFlags_CREATE)
+        );
+    }
+
+    //--------------------------------------------------------------------------
+    // Exceed max number of file handles
+
+    snprintf(filename, cMaxFilenameSize, cFilenameFormat, cMaxFileHandles);
+    OS_FileSystemFile_Handle_t testFileHandle;
+
+    ASSERT_EQ_OS_ERR(
+        OS_ERROR_OUT_OF_BOUNDS,
+        OS_FileSystemFile_open(hFs, &testFileHandle, filename,
+                               OS_FileSystem_OpenMode_RDONLY,
+                               OS_FileSystem_OpenFlags_CREATE)
+    );
+
+    //--------------------------------------------------------------------------
+    // Close file handles
+
+    for (uint8_t idx = 0; idx < cMaxFileHandles; idx++)
+    {
+        TEST_SUCCESS(
+            OS_FileSystemFile_close(hFs, fileHandles[idx])
+        );
+    }
+
+    TEST_FINISH();
+}
+
+
+//------------------------------------------------------------------------------
+static void
 test_OS_FileSystem(
     OS_FileSystem_Handle_t hFs,
     OS_FileSystem_Type_t type)
 {
     test_OS_FileSystem_format(hFs, type, false);
     test_OS_FileSystem_mount(hFs, type, false);
+    test_OS_FileSystem_maxHandles(hFs, type);
 
     test_OS_FileSystemFile(hFs, type);
 
